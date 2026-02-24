@@ -1,0 +1,7 @@
+.env
+.venv
+__pycache__/
+*.pyc
+csv_explorer.ipynb
+ItemSparse.2.5.5.65895.csv
+item_names.csv
