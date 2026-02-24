@@ -15,15 +15,16 @@ def get_item_price(item_name: str):
     query = """
         SELECT item.ID, item.Display_lang, rd.minBuyout, rd.quantity, rd.numAuctions, rd.marketValue, rd.snapshot_time
         FROM `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.item_names` as item
-        LEFT JOIN `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data` as rd
+        INNER JOIN `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data` as rd
         ON item.ID = rd.itemId
-        WHERE LOWER(item.Display_lang) LIKE LOWER(@item_name)
+        WHERE LOWER(item.Display_lang) LIKE (@item_name)
+        ORDER BY rd.numAuctions
         LIMIT 20
         """
 
     job_config = bigquery.QueryJobConfig(
     query_parameters=[
-        bigquery.ScalarQueryParameter("item_name", "STRING", f"%{item_name}%") # prevent SQL injection by ensuring any searches are literal strings
+        bigquery.ScalarQueryParameter("item_name", "STRING", f"%{item_name.lower()}%") # prevent SQL injection by ensuring any searches are literal strings
     ]
 )
 
