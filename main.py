@@ -12,14 +12,16 @@ client = bigquery.Client(GCP_PROJECT)
 
 @app.get("/item/{item_name}")
 def get_item_price(item_name: str):
+    # Display_lang = item name
     query = """
         SELECT item.ID, item.Display_lang, rd.minBuyout, rd.quantity, rd.numAuctions, rd.marketValue, rd.snapshot_time
         FROM `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.item_names` as item
         INNER JOIN `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data` as rd
         ON item.ID = rd.itemId
         WHERE LOWER(item.Display_lang) LIKE (@item_name)
-        ORDER BY rd.numAuctions
-        LIMIT 20
+        AND rd.numAuctions > 0
+        ORDER BY rd.numAuctions DESC
+        LIMIT 50
         """
 
     job_config = bigquery.QueryJobConfig(
