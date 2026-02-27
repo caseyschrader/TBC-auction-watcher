@@ -1,10 +1,12 @@
 import os
+import sys
 from dotenv import load_dotenv
 from airflow.decorators import dag
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from Airflow.scripts.fetcher import run as fetch_tsm_data
+sys.path.insert(0, '/opt/airflow/scripts')
+from fetcher import run as fetch_tsm_data
 
 load_dotenv()
 AH_ID = os.getenv("AH_ID")
@@ -23,7 +25,7 @@ default_args = {
 @dag(
     default_args=default_args,
     description='Fetches data from TSM auction house API and loads it into Cloud Storage',
-    schedule_interval='@hourly',
+    schedule='@hourly',
     start_date=datetime(2026,2,25),
     catchup=False
 )
