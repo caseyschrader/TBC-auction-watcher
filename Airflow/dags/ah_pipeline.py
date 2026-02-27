@@ -4,7 +4,7 @@ from airflow.decorators import dag
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
-from fetcher import run as fetch_tsm_data
+from Airflow.scripts.fetcher import run as fetch_tsm_data
 
 load_dotenv()
 AH_ID = os.getenv("AH_ID")
