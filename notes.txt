@@ -4,4 +4,4 @@ gcloud builds submit --tag us-central1-docker.pkg.dev/project-f929cf6e-3eec-4c5c
   --region us-central1 \
   --allow-unauthenticated
 
-  https://studio--studio-5386290856-bc46e.us-central1.hosted.app
+https://studio--studio-5386290856-bc46e.us-central1.hosted.app

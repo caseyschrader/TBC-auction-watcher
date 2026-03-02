@@ -1,0 +1,21 @@
+{"timestamp":"2026-02-28T00:00:01.744524Z","level":"info","event":"DAG bundles loaded: dags-folder, example_dags","logger":"airflow.dag_processing.bundles.manager.DagBundlesManager","filename":"manager.py","lineno":179}
+{"timestamp":"2026-02-28T00:00:01.746005Z","level":"info","event":"Filling up the DagBag from /opt/airflow/dags/ah_pipeline.py","logger":"airflow.models.dagbag.BundleDagBag","filename":"dagbag.py","lineno":593}
+{"timestamp":"2026-02-28T00:00:06.437800Z","level":"warning","event":"The `airflow.decorators.dag` attribute is deprecated. Please use `'airflow.sdk.dag'`.","category":"DeprecatedImportWarning","filename":"/opt/airflow/dags/ah_pipeline.py","lineno":4,"logger":"py.warnings"}
+{"timestamp":"2026-02-28T00:00:06.437950Z","level":"warning","event":"The `airflow.operators.python.PythonOperator` attribute is deprecated. Please use `'airflow.providers.standard.operators.python.PythonOperator'`.","category":"DeprecatedImportWarning","filename":"/opt/airflow/dags/ah_pipeline.py","lineno":6,"logger":"py.warnings"}
+{"timestamp":"2026-02-28T00:00:06.498882Z","level":"info","event":"Task instance is in running state","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.499085Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.QUEUED","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.499254Z","level":"info","event":"Current task name:fetch_tsm_data","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.499357Z","level":"info","event":"Dag name:ah_pipeline","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.502078Z","level":"info","event":"[2026-02-28T00:00:06Z] Starting fetch...","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.502189Z","level":"info","event":"Getting access token...","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.502304Z","level":"info","event":"Using key: 'bd226bdf-ef39-4bbe-9202-df52f5aa0c51'","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:06.986762Z","level":"info","event":"Fetching AH data...","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:08.121135Z","level":"info","event":"Got 8669 items","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:08.121445Z","level":"info","event":"Uploading to GCS...","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:09.048607Z","level":"info","event":"Uploaded 8669 items to gs://dreamscythe-ah/ah_snapshots/2026-02-28T00:00:06Z.ndjson","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:09.048979Z","level":"info","event":"Done!","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:09.051387Z","level":"info","event":"Done. Returned value was: ah_snapshots/2026-02-28T00:00:06Z.ndjson","logger":"airflow.task.operators.airflow.providers.standard.operators.python.PythonOperator","filename":"python.py","lineno":230}
+{"timestamp":"2026-02-28T00:00:09.051647Z","level":"info","event":"Pushing xcom","ti":"RuntimeTaskInstance(id=UUID('019ca18b-826e-7d4e-9338-dbb8bcc4f3bd'), task_id='fetch_tsm_data', dag_id='ah_pipeline', run_id='scheduled__2026-02-28T00:00:00+00:00', try_number=1, dag_version_id=UUID('019ca11c-df1e-789e-b818-c0d1e9ec8259'), map_index=-1, hostname='2d09a716fb38', context_carrier={}, task=<Task(PythonOperator): fetch_tsm_data>, bundle_instance=LocalDagBundle(name=dags-folder), max_tries=3, start_date=datetime.datetime(2026, 2, 28, 0, 0, 0, 856392, tzinfo=datetime.timezone.utc), end_date=None, state=<TaskInstanceState.RUNNING: 'running'>, is_mapped=False, rendered_map_index=None)","logger":"task","filename":"task_runner.py","lineno":1522}
+{"timestamp":"2026-02-28T00:00:09.118087Z","level":"info","event":"Task instance in success state","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:09.118281Z","level":"info","event":" Previous state of the Task instance: TaskInstanceState.RUNNING","logger":"task.stdout"}
+{"timestamp":"2026-02-28T00:00:09.118567Z","level":"info","event":"Task operator:<Task(PythonOperator): fetch_tsm_data>","logger":"task.stdout"}

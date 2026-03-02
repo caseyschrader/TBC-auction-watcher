@@ -19,7 +19,8 @@ def get_item_price(item_name: str):
         INNER JOIN `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data` as rd
         ON item.ID = rd.itemId
         WHERE LOWER(item.Display_lang) LIKE (@item_name)
-        AND rd.numAuctions > 0
+            AND rd.numAuctions > 0
+            AND rd.snapshot_time = (SELECT MAX(snapshot_time) FROM `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data`)
         ORDER BY rd.numAuctions DESC
         LIMIT 50
         """
@@ -29,6 +30,40 @@ def get_item_price(item_name: str):
         bigquery.ScalarQueryParameter("item_name", "STRING", f"%{item_name.lower()}%") # prevent SQL injection by ensuring any searches are literal strings
     ]
 )
+
+    results = client.query(query, job_config=job_config).result()
+    return [dict(row) for row in results]
+
+@app.get("/item/{item_id}/history")
+def get_item_price_history(item_id: int, days: int = 7):
+    query = """
+        SELECT
+            rd.snapshot_time,
+            rd.minBuyout,
+            rd.marketValue,
+            rd.numAuctions,
+            rd.quantity,
+            -- 24-snapshot mean and stddev
+            AVG(rd.marketValue) OVER (
+                ORDER BY rd.snapshot_time
+                ROWS BETWEEN 23 PRECEDING AND CURRENT ROW
+            ) AS mean,
+            STDDEV(rd.marketValue) OVER (
+                ORDER BY rd.snapshot_time
+                ROWS BETWEEN 23 PRECEDING AND CURRENT ROW
+            ) AS stddev
+        FROM `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data` AS rd
+        WHERE rd.itemId = @item_id
+          AND rd.snapshot_time >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL @days DAY)
+        ORDER BY rd.snapshot_time ASC
+    """
+
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter("item_id", "INT64", item_id),
+            bigquery.ScalarQueryParameter("days", "INT64", days),
+        ]
+    )
 
     results = client.query(query, job_config=job_config).result()
     return [dict(row) for row in results]

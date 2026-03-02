@@ -74,6 +74,7 @@ def run():
     upload_to_gcs(data, timestamp)
 
     print("Done!")
+    return f"ah_snapshots/{timestamp}.ndjson"
 
 
 if __name__ == "__main__":
