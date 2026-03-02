@@ -4,6 +4,7 @@ import os
 from dotenv import load_dotenv
 from datetime import datetime, timezone
 from google.cloud import storage
+from google.cloud import bigquery
 
 # Config
 load_dotenv()
@@ -58,6 +59,25 @@ def upload_to_gcs(data, timestamp):
         content_type="application/x-ndjson"
     )
     print(f"Uploaded {len(data)} items to gs://{BUCKET_NAME}/{filename}")
+    return filename
+
+def load_to_bigquery(gcs_uri, project, dataset="tsm_ah_data", table="raw_data"):
+    bq_client = bigquery.Client(project=project)
+    table_ref = f"{project}.{dataset}.{table}"
+
+    job_config = bigquery.LoadJobConfig(
+        source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+        write_disposition=bigquery.WriteDisposition.WRITE_APPEND,
+        autodetect=True
+    )
+
+    load_job = bq_client.load_table_from_uri(
+        f"gs://{gcs_uri}",
+        table_ref,
+        job_config=job_config
+    )
+    load_job.result()
+    print(f"Loaded {load_job.output_rows} rows into {table_ref}")
 
 def run():
     timestamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -71,10 +91,14 @@ def run():
     print(f"Got {len(data)} items")
 
     print("Uploading to GCS...")
-    upload_to_gcs(data, timestamp)
+    filename = upload_to_gcs(data, timestamp)
+
+    print("Loading into BigQuery")
+    load_to_bigquery(f"{BUCKET_NAME}/{filename}", GCP_PROJECT)
+
 
     print("Done!")
-    return f"ah_snapshots/{timestamp}.ndjson"
+   # return f"ah_snapshots/{timestamp}.ndjson"
 
 
 if __name__ == "__main__":
