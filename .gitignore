@@ -6,4 +6,5 @@ csv_explorer.ipynb
 ItemSparse.2.5.5.65895.csv
 item_names.csv
 notes.txt
-Airflow/logs
+Airflow/logs/
+logs/
