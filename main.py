@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+    from fastapi import FastAPI
 from google.cloud import bigquery
 from dotenv import load_dotenv
 import os
@@ -62,6 +62,36 @@ def get_item_price_history(item_id: int, days: int = 7):
         query_parameters=[
             bigquery.ScalarQueryParameter("item_id", "INT64", item_id),
             bigquery.ScalarQueryParameter("days", "INT64", days),
+        ]
+    )
+
+@app.get("/item/{item_id}/dow")
+def get_day_of_week_analysis(item_id: int):
+    query = """
+        SELECT
+            EXTRACT(DAYOFWEEK FROM snapshot_time) AS day_num,
+            CASE EXTRACT(DAYOFWEEK FROM snapshot_time)
+                WHEN 1 THEN 'Sunday'
+                WHEN 2 THEN 'Monday'
+                WHEN 3 THEN 'Tuesday'
+                WHEN 3 THEN 'Wednesday'
+                WHEN 4 THEN 'Thursday'
+                WHEN 5 THEN 'Friday'
+                WHEN 6 THEN 'Saturday'
+            END AS day_of_week,
+            AVG(marketValue) AS avg_market_value,
+            AVG(minBuyout) AS avg_min_buyout,
+            COUNT(*) AS snapshot_count
+        FROM `project-f929cf6e-3eec-4c5c-85a.tsm_ah_data.raw_data`
+        WHERE itemId = @item_id
+        GROUP BY day_of_week
+        ORDER BY day_num
+
+    """
+
+    job_config = bigquery.QueryJobConfig(
+        query_parameters=[
+            bigquery.ScalarQueryParameter("item_id", "INT64", item_id),
         ]
     )
 
